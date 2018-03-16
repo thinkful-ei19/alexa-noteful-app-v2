@@ -110,10 +110,15 @@ describe('Noteful API', function () {
           expect(res.body).to.have.length(count);
         });
     });
-
+    //done but check!!
     it('should return a list with the correct right fields', function () {
-      return chai.request(app)
-        .get('/api/notes')
+      let count;
+      return knex.count()
+        .from('notes')
+        .then(([result]) => {
+          count = Number(result.count);
+          return chai.request(app).get('/api/notes');
+        })
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
