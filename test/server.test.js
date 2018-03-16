@@ -282,12 +282,16 @@ describe('Noteful API', function () {
   });
 
   describe('DELETE  /api/notes/:id', function () {
-
+    //done
     it('should delete an item by id', function () {
       return chai.request(app)
         .delete('/api/notes/1005')
         .then(function (res) {
           expect(res).to.have.status(204);
+          return knex.select('id').from('notes').where('id', '1005');
+        })
+        .then(results => {
+          expect(results.length).to.equal(0);
         });
     });
     
