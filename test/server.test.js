@@ -112,8 +112,14 @@ describe('Noteful API', function () {
     });
 
     it('should return a list with the correct right fields', function () {
-      return chai.request(app)
-        .get('/api/notes')
+      let properties;
+      return knex.select('id', 'title', 'content')
+        .from('notes')
+        .then(results => {
+          properties = Object.keys(results[0]);
+          //console.log("LOOK", properties);
+          return chai.request(app).get('/api/notes');
+        })
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
@@ -121,7 +127,7 @@ describe('Noteful API', function () {
           expect(res.body).to.have.length(10);
           res.body.forEach(function (item) {
             expect(item).to.be.a('object');
-            expect(item).to.include.keys('id', 'title', 'content');
+            expect(item).to.include.keys(...properties);
           });
         });
     });
